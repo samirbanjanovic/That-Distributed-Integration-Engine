@@ -1,0 +1,10 @@
+{
+  "packageName": "componentHostProcess",
+  "description": "monitors a directory for incoming files using windows wildcard filters",
+  "packageVersion": "1.0.0",
+  "contentRoot": "publish",
+  "extensionProperties": {
+    "command": "ComponentHostProcess.exe",
+    "args": "--port <int>"
+  }
+}

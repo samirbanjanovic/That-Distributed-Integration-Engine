@@ -1,0 +1,11 @@
+{
+  "packageName": "masterComponent",
+  "description": "component responsible for monitoring and managing all nodes in cluster",
+  "packageVersion": "1.0.0",
+  "contentRoot": "lib/netstandard2.0/",
+  "extensionProperties": {
+    "assemblyName": "OnTrac.Integration.Components.Master",
+    "assemblyExtension": ".dll",
+    "fullyQualifiedClassName": "OnTrac.Integration.Components.Master.WebHostMasterComponent"
+  }
+}

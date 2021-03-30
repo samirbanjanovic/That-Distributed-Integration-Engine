@@ -1,0 +1,36 @@
+{
+  "componentPackages": [
+    {
+      "name": "fileWatcherComponent",
+      "version": "1.0.0",
+      "packagePath": "C:\\repos\\Integration Platform\\OnTrac.Integration.Components.FileWatcher\\OnTrac.Integration.Components.FileWatcher\\bin\\Debug\\OnTrac.Integration.Components.FileWatcher.1.3.1.nupkg"
+    },
+    {
+      "name": "quartzSchedulerComponent",
+      "version": "1.0.0",
+      "packagePath": "C:\\repos\\Integration Platform\\OnTrac.Integration.Components.QuartzScheduler\\OnTrac.Integration.Components.QuartzScheduler\\bin\\Debug\\OnTrac.Integration.Components.QuartzScheduler.1.1.1.nupkg"
+    },
+    {
+      "name": "basicMessagePublisher",
+      "version": "1.0.0",
+      "packagePath": "C:\\repos\\Integration Platform\\OnTrac.Integration.Publishers.Basic\\OnTrac.Integration.Publishers.Basic\\bin\\Debug\\OnTrac.Integration.Publishers.Basic.1.2.0.nupkg"
+    }
+  ],
+  "componentInstances": [
+    {
+      "id": 1,
+      "packageName": "quartzSchedulerComponent",
+      "packageVersion": "1.0.0",
+      "settings": {
+        "type": "scheduler",
+        "cron": "* * * 0/5 * * ?"
+      },
+      "messagePublisher": {
+        "id": 1,
+        "packageName": "basicMessagePublisher",
+        "packageVersion": "1.0.0",
+        "settings": {}
+      }
+    }
+  ]
+}

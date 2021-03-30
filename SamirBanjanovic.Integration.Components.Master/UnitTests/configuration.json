@@ -1,0 +1,10 @@
+{
+  "packageName": "componentHostProcess",
+  "description": "host process for isolating components",
+  "packageVersion": "1.2.0",
+  "contentRoot": "publish",
+  "extensionProperties": {
+    "command": "ComponentHostProcess.exe",
+    "args": "--port <int>"
+  }
+}
