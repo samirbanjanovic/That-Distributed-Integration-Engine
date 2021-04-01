@@ -1,0 +1,11 @@
+{
+  "packageName": "masterComponent",
+  "description": "component responsible for monitoring and managing all nodes in cluster",
+  "packageVersion": "1.0.0",
+  "contentRoot": "lib/netstandard2.0/",
+  "extensionProperties": {
+    "assemblyName": "TDIE.Components.NodeManager",
+    "assemblyExtension": ".dll",
+    "fullyQualifiedClassName": "TDIE.Components.NodeManager.WebHostMasterComponent"
+  }
+}
