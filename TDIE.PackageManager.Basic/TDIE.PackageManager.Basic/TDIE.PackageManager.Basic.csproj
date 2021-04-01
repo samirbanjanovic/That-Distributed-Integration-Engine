@@ -4,7 +4,7 @@
     <TargetFramework>netstandard2.0</TargetFramework>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <Authors>Samir Banjanovic</Authors>
-    <Company>OnTrac</Company>
+    <Company>TDIE</Company>
     <Description>Our basic package manager. Unzips a file into configured location and stores pacakge details in a no sql data file using LiteDb nuget package</Description>
     <Version>1.15.1</Version>
     <AssemblyVersion>1.15.1.0</AssemblyVersion>

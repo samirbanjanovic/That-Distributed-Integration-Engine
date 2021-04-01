@@ -15,7 +15,7 @@ namespace TDIE.Extensions.Logging
         public static LoggerConfiguration Configure(this LoggerConfiguration loggerConfiguration, IConfiguration configuration)
         {
             loggerConfiguration
-                .WithOnTracDbSink(configuration.GetSection("Serilog").GetSection("MsSqlLog"))
+                .WithTDIEDbSink(configuration.GetSection("Serilog").GetSection("MsSqlLog"))
                 .ReadFrom
                 .Configuration(configuration);
                     
@@ -26,7 +26,7 @@ namespace TDIE.Extensions.Logging
             return loggerConfiguration;
         }
 
-        private static LoggerConfiguration WithOnTracDbSink(this LoggerConfiguration loggerConfiguration, IConfigurationSection configuration)
+        private static LoggerConfiguration WithTDIEDbSink(this LoggerConfiguration loggerConfiguration, IConfigurationSection configuration)
         {
             var columnOptions = new ColumnOptions();
             columnOptions.Store.Remove(StandardColumn.MessageTemplate);

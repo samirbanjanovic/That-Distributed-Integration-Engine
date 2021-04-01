@@ -24,7 +24,7 @@
     <PackageReference Include="Microsoft.Extensions.Hosting" Version="2.2.0" />
     <PackageReference Include="TDIE.Core" Version="1.8.0" />
     <PackageReference Include="TDIE.Extensions.Logging" Version="1.4.0" />
-    <PackageReference Include="OnTrac.Utilities.Mappers" Version="2.5.4" />
+    <PackageReference Include="TDIE.Utilities.Mappers" Version="2.5.4" />
     <PackageReference Include="Serilog.AspNetCore" Version="2.1.1" />
     <PackageReference Include="Serilog.Extensions.Hosting" Version="2.0.0" />
     <PackageReference Include="Serilog.Sinks.ColoredConsole" Version="3.0.1" />

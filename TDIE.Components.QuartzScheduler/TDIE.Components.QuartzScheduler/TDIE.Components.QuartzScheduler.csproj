@@ -8,7 +8,7 @@
     <PackageId>TDIE.Components.QuartzScheduler</PackageId>
     <Version>1.1.1</Version>
     <Authors>Samir Banjanovic</Authors>
-    <Company>OnTrac</Company>
+    <Company>TDIE</Company>
   </PropertyGroup>
 
   <ItemGroup>

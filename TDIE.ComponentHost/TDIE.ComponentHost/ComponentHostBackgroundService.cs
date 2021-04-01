@@ -7,8 +7,8 @@ using TDIE.ComponentHost.Classes;
 using TDIE.ComponentHost.Core;
 using TDIE.ComponentHost.Helpers;
 using TDIE.Core;
-using OnTrac.Utilities.Mappers;
-using OnTrac.Utilities.Mappers.Core;
+using TDIE.Utilities.Mappers;
+using TDIE.Utilities.Mappers.Core;
 using static TDIE.ComponentHost.Helpers.StaticHelpers;
 
 namespace TDIE.ComponentHost

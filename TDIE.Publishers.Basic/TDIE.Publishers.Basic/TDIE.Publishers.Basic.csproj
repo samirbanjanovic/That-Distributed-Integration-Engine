@@ -5,7 +5,7 @@
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <Version>1.2.0</Version>
     <Authors>Samir Banjanovic</Authors>
-    <Company>OnTrac</Company>
+    <Company>TDIE</Company>
   </PropertyGroup>
 
   <ItemGroup>

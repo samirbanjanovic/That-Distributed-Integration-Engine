@@ -4,7 +4,7 @@
     <TargetFramework>netstandard2.0</TargetFramework>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <Authors>Samir Banjanovic</Authors>
-    <Company>OnTrac</Company>
+    <Company>TDIE</Company>
     <Product>ComponentHost</Product>
     <Version>1.21.1</Version>
   </PropertyGroup>
@@ -25,7 +25,7 @@
     <PackageReference Include="TDIE.ComponentHost.Core" Version="1.10.0" />
     <PackageReference Include="TDIE.Core" Version="1.8.0" />
     <PackageReference Include="TDIE.Extensions.Logging" Version="1.10.0" />
-    <PackageReference Include="OnTrac.Utilities.Mappers" Version="2.5.4" />
+    <PackageReference Include="TDIE.Utilities.Mappers" Version="2.5.4" />
     <PackageReference Include="runtime.win.System.IO.FileSystem" Version="4.3.0" />
   </ItemGroup>
 
