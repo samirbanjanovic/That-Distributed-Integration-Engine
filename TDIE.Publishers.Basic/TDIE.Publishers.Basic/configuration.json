@@ -1,0 +1,11 @@
+{
+  "packageName": "basicMessagePublisher",
+  "description": "dumb message publisher",
+  "packageVersion": "1.0.0",
+  "contentRoot": "lib/netstandard2.0/",
+  "extensionProperties": {
+    "assemblyName": "TDIE.Publisher.Basic",
+    "assemblyExtension": ".dll",
+    "fullyQualifiedClassName": "TDIE.Publishers.Basic.TestPublisher"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "packageName": "quartzSchedulerComponent",
+  "description": "Runs a hosted scheduler that triggers events on a specific time interval",
+  "packageVersion": "1.0.0",
+  "contentRoot": "lib/netstandard2.0/",
+  "extensionProperties": {
+    "assemblyName": "TDIE.Components.QuartzScheduler",
+    "assemblyExtension": ".dll",
+    "fullyQualifiedClassName": "TDIE.Components.QuartzScheduler.QuartzSchedulerComponent"
+  }
+}

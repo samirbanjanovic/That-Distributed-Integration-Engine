@@ -1,0 +1,36 @@
+{
+  "componentPackages": [
+    {
+      "name": "fileWatcherComponent",
+      "version": "1.0.0",
+      "packagePath": "C:\\repos\\Integration Platform\\TDIE.Components.FileWatcher\\TDIE.Components.FileWatcher\\bin\\Debug\\TDIE.Components.FileWatcher.1.3.1.nupkg"
+    },
+    {
+      "name": "quartzSchedulerComponent",
+      "version": "1.0.0",
+      "packagePath": "C:\\repos\\Integration Platform\\TDIE.Components.QuartzScheduler\\TDIE.Components.QuartzScheduler\\bin\\Debug\\TDIE.Components.QuartzScheduler.1.1.1.nupkg"
+    },
+    {
+      "name": "basicMessagePublisher",
+      "version": "1.0.0",
+      "packagePath": "C:\\repos\\Integration Platform\\TDIE.Publishers.Basic\\TDIE.Publishers.Basic\\bin\\Debug\\TDIE.Publishers.Basic.1.2.0.nupkg"
+    }
+  ],
+  "componentInstances": [
+    {
+      "id": 1,
+      "packageName": "quartzSchedulerComponent",
+      "packageVersion": "1.0.0",
+      "settings": {
+        "type": "scheduler",
+        "cron": "* * * 0/5 * * ?"
+      },
+      "messagePublisher": {
+        "id": 1,
+        "packageName": "basicMessagePublisher",
+        "packageVersion": "1.0.0",
+        "settings": {}
+      }
+    }
+  ]
+}

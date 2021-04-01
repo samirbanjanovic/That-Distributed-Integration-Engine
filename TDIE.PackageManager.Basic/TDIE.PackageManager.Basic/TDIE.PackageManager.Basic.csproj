@@ -1,0 +1,32 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <Authors>Samir Banjanovic</Authors>
+    <Company>OnTrac</Company>
+    <Description>Our basic package manager. Unzips a file into configured location and stores pacakge details in a no sql data file using LiteDb nuget package</Description>
+    <Version>1.15.1</Version>
+    <AssemblyVersion>1.15.1.0</AssemblyVersion>
+    <FileVersion>1.15.1.0</FileVersion>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="appsettings.json" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="appsettings.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="LiteDb" Version="4.1.4" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" Version="2.2.0" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="2.2.0" />
+    <PackageReference Include="Newtonsoft.Json" Version="12.0.1" />
+    <PackageReference Include="TDIE.PackageManager.Core" Version="2.7.0" />
+  </ItemGroup>
+
+</Project>

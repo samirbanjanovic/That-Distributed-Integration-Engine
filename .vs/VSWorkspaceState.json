@@ -1,14 +1,14 @@
 {
   "ExpandedNodes": [
     "",
-    "\\OnTrac.Integration.Components.Master",
-    "\\OnTrac.Integration.Components.Master\\OnTrac.Integration.Components.Master",
-    "\\OnTrac.Integration.Components.Master\\OnTrac.Integration.Components.Master.Tester",
-    "\\OnTrac.Integration.Components.Master\\OnTrac.Integration.Components.Master\\Data",
-    "\\OnTrac.Integration.Components.Master\\OnTrac.Integration.Components.Master\\Node",
-    "\\OnTrac.Integration.Components.Master\\OnTrac.Integration.Components.Master\\Node\\WebApi",
-    "\\OnTrac.Integration.Components.Master\\UnitTests"
+    "\\TDIE.Components.Master",
+    "\\TDIE.Components.Master\\TDIE.Components.Master",
+    "\\TDIE.Components.Master\\TDIE.Components.Master.Tester",
+    "\\TDIE.Components.Master\\TDIE.Components.Master\\Data",
+    "\\TDIE.Components.Master\\TDIE.Components.Master\\Node",
+    "\\TDIE.Components.Master\\TDIE.Components.Master\\Node\\WebApi",
+    "\\TDIE.Components.Master\\UnitTests"
   ],
-  "SelectedNode": "\\OnTrac.Integration.Components.Master\\UnitTests\\UnitTests.csproj",
+  "SelectedNode": "\\TDIE.Components.Master\\UnitTests\\UnitTests.csproj",
   "PreviewInSolutionExplorer": false
 }

@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.28010.2041
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TDIE.ComponentHost", "TDIE.ComponentHost\TDIE.ComponentHost.csproj", "{5E944736-EF0C-45EF-AEEB-EBEB0BB87029}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TDIE.ComponentHost.Tests", "TDIE.ComponentHost.Tests\TDIE.ComponentHost.Tests.csproj", "{53635E72-4346-4BC2-B3FE-9C98A619B09B}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{5E944736-EF0C-45EF-AEEB-EBEB0BB87029}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5E944736-EF0C-45EF-AEEB-EBEB0BB87029}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5E944736-EF0C-45EF-AEEB-EBEB0BB87029}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5E944736-EF0C-45EF-AEEB-EBEB0BB87029}.Release|Any CPU.Build.0 = Release|Any CPU
+		{53635E72-4346-4BC2-B3FE-9C98A619B09B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{53635E72-4346-4BC2-B3FE-9C98A619B09B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{53635E72-4346-4BC2-B3FE-9C98A619B09B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{53635E72-4346-4BC2-B3FE-9C98A619B09B}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {D540112A-B5FA-47E0-8302-42888A55EB84}
+	EndGlobalSection
+EndGlobal

@@ -1,0 +1,11 @@
+{
+  "profiles": {
+    "TDIE.ComponentHost": {
+      "commandName": "Project",
+      "commandLineArgs": "--url http://localhost:5555",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development"
+      }
+    }
+  }
+}

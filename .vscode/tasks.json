@@ -7,7 +7,7 @@
             "type": "process",
             "args": [
                 "build",
-                "${workspaceFolder}/OnTrac.Integration.ComponentHost/OnTrac.Integration.ComponentHost.Tests/OnTrac.Integration.ComponentHost.Tests.csproj"
+                "${workspaceFolder}/TDIE.ComponentHost/TDIE.ComponentHost.Tests/TDIE.ComponentHost.Tests.csproj"
             ],
             "problemMatcher": "$msCompile"
         }
