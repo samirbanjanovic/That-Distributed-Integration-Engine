@@ -28,7 +28,7 @@ namespace TDIE.Components.NodeManager.WebApi
         {
             var configuration = new ConfigurationBuilder()
                             .SetBasePath(Environment.CurrentDirectory)
-                            .AddJsonFile("masterComponentWebConfig.json", optional: false, reloadOnChange: true)
+                            .AddJsonFile("NodeManagerComponentWebConfig.json", optional: false, reloadOnChange: true)
                             .AddEnvironmentVariables()
                             .Build();
 

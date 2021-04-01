@@ -20,10 +20,10 @@ using Timer = System.Timers.Timer;
 
 namespace TDIE.Components.NodeManager
 {
-    public sealed class MasterComponent
+    public sealed class NodeManagerComponent
         : IComponent
     {
-        private readonly ILogger<MasterComponent> _logger;        
+        private readonly ILogger<NodeManagerComponent> _logger;        
         private readonly NodeSynchronizer _nodeSynchronizer;
         private readonly DistributedLockFactory _distributedLockFactory;
         private readonly IConfiguration _masterConfiguration;
@@ -32,7 +32,7 @@ namespace TDIE.Components.NodeManager
 
         private ClusterManager _clusterManager;
 
-        public MasterComponent(IComponentSettings settings, ILogger<MasterComponent> logger)
+        public NodeManagerComponent(IComponentSettings settings, ILogger<NodeManagerComponent> logger)
         {
             Settings = settings;
             _masterConfiguration = new ConfigurationBuilder()

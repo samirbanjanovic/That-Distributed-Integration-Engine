@@ -18,7 +18,7 @@ namespace ComponentLaunchTests
                 Name = "selfHosted",
                 Properties = new Dictionary<string, string>
                 {
-                    {"masterConfigurationFile" , "masterComponentWebConfig.json" }
+                    {"masterConfigurationFile" , "NodeManagerComponentWebConfig.json" }
                 }
             };
 
@@ -30,7 +30,7 @@ namespace ComponentLaunchTests
                 .AddEnvironmentVariables()
                 .Build();
 
-            await new MasterComponent(settings, null)
+            await new NodeManagerComponent(settings, null)
                 .StartAsync(CancellationToken.None);
 
             Console.ReadLine();         

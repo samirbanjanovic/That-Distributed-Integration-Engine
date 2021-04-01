@@ -7,7 +7,7 @@ namespace TDIE.Components.NodeManager.Tester
     {
         static void Main(string[] args)
         {
-            var x = new MasterComponent(null, null, null);
+            var x = new NodeManagerComponent(null, null, null);
             x.StartAsync(CancellationToken.None).GetAwaiter().GetResult();
             Console.ReadLine();
         }

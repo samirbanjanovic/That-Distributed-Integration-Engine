@@ -20,7 +20,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="MasterComponent\" />
+    <Folder Include="NodeManagerComponent\" />
   </ItemGroup>
 
 </Project>
