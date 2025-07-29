@@ -1050,81 +1050,161 @@ Simple implementation for testing and development that logs messages and can per
 
 ## How It Works
 
-### 1. **Cluster Initialization**
-- Node Manager starts and reads cluster configuration
-- Discovers available nodes in the cluster
-- Synchronizes package versions across nodes
-- Distributes component instances based on load
+TDIE operates through a sophisticated distributed orchestration model with timer-based synchronization, distributed locking, and automated health monitoring. The following detailed flows demonstrate how the platform handles complex distributed processing scenarios in practice.
 
-### 2. **Component Deployment**
-```
-Package Upload → Validation → Distribution → Instantiation → Monitoring
-```
+### 1. **Cluster Initialization and Synchronization Process**
 
-### 3. **Job Processing Flow**
-```
-Trigger Event → Component Processing → Message Publishing → Next Component → Result
-```
+**Process Description:**
+The Node Manager acts as the cluster orchestrator, running a timer-based synchronization process (default: every 50 seconds). This process, managed by `NodeManagerComponent`, maintains cluster consistency, handles dynamic scaling, and ensures operational integrity.
 
-### 4. **Scaling and Distribution**
-- Components are distributed across available nodes
-- Failed nodes are detected and workloads redistributed
-- New nodes can be added dynamically to increase capacity
+**Detailed Flow:**
+1.  **Configuration Load**: The `NodeManagerComponent` starts and loads its configuration from `clusterSettings.json`, which defines the cluster topology and required packages.
+2.  **Initial Discovery**: It discovers and validates all configured nodes via HTTP health checks to their respective Node APIs.
+3.  **Cluster Manager Initialization**: A `ClusterManager` instance is created, which immediately populates its view of the cluster's state by querying each node for its running component instances.
+4.  **Timer Activation**: A recurring timer is started to periodically trigger the `SyncCluster()` method.
+5.  **Continuous Synchronization**: On each timer tick, `SyncCluster()` performs these actions:
+    *   It re-reads the node configuration to detect any changes.
+    *   It compares the configured nodes with the currently active nodes to identify new additions or removals.
+    *   It triggers cluster expansion or shrinkage as needed.
+    *   It directs the `NodeSynchronizer` to verify and update packages on each node.
 
-## Getting Started
+**Sample Scenario - Adding a New Node:**
+*   **Input**: A new node, "tdie-node-4", is added to the `nodeServers` array in `clusterSettings.json`.
+*   **Process Flow**:
+    *   The Node Manager's timer triggers the `SyncCluster()` method.
+    *   The system detects "tdie-node-4" as a new, unmanaged node.
+    *   The `ClusterManager` invokes `ExpandClusterAsync()` for the new node.
+    *   A distributed lock is acquired for "tdie-node-4" to prevent concurrent modifications.
+    *   The `NodeSynchronizer` connects to the new node's API and ensures all required packages (like the Component Host) are uploaded and up-to-date.
+    *   The `ClusterManager` then starts the necessary component instances on the new node, updating its internal state map.
+*   **Output**: "tdie-node-4" becomes an active member of the cluster, sharing the workload by running its own set of component instances.
 
-### Prerequisites
-- .NET Core 6.0 or later
-- SQL Server or SQLite for metadata storage
-- Network connectivity between cluster nodes
+### 2. **Package Deployment and Distribution Process**
 
-### Basic Setup
+**Process Description:**
+Package deployment is a coordinated process managed by the Node Manager, involving multi-stage validation, cluster-wide distribution, and controlled updates with rollback capabilities.
 
-1. **Configure Node Manager**
-```json
-{
-  "Cluster": {
-    "SyncInterval": "30000",
-    "Nodes": [
-      {
-        "NetworkName": "node1",
-        "ApiUrl": "https://node1:5000"
+**Detailed Flow:**
+1.  **Upload**: A component package (ZIP file) is uploaded to the Node Manager's API.
+2.  **Validation**: The package is validated for correct structure, a valid `manifest.json`, and declared dependencies.
+3.  **Distribution**: The `NodeSynchronizer` distributes the package to all nodes in the cluster by calling each node's `/api/node/packages` endpoint.
+4.  **Graceful Shutdown (for Updates)**: If updating an existing package, the `NodeSynchronizer` first identifies all running instances of that package and gracefully shuts them down via their Component Host APIs.
+5.  **Installation**: Each Node API receives the package, extracts it, and stores it locally, using LiteDB to track metadata.
+6.  **Restart**: The Node Manager then commands the Component Hosts to restart the component instances using the new package version.
+
+**Sample Scenario - Deploying a File Processor Component:**
+*   **Input**: A `fileProcessor.zip` package is uploaded via a REST client.
+*   **Package Contents**:
+    *   `manifest.json` (defining metadata, the main class, and default configuration)
+    *   `FileProcessor.dll` (the component assembly)
+    *   `dependencies/` (any required libraries)
+*   **Process Flow**:
+    1.  The Node Manager validates the package.
+    2.  It iterates through each registered node and calls the `POST /api/node/packages` endpoint on each, sending the ZIP file.
+    3.  Each node's `PackageManager` saves the package.
+    4.  The Node Manager, during its next sync, identifies that this component should be running and issues commands to the Component Hosts to instantiate it.
+*   **Output**: `FileProcessor` components are now running across the cluster, configured and ready to process files.
+
+### 3. **Component Lifecycle and Instance Management**
+
+**Process Description:**
+Component instances follow a structured lifecycle managed by the `ComponentHostBackgroundService`. This service provides process isolation, dependency injection, and state management.
+
+**Detailed Flow:**
+1.  **Placement Decision**: The `ClusterManager` decides which node should run a new component instance.
+2.  **Host Process Launch**: It calls the target Node API's `/api/node/processes/{packageName}/start` endpoint. The Node API launches a new `TDIE.ComponentHost` process, assigning it a dynamic port.
+3.  **Initialization**: The `ClusterManager` communicates with the new Component Host's API to initialize the services.
+    *   It first calls `InitializeMessagePublisherServiceAsync` if the component requires a message publisher.
+    *   It then calls `InitializeComponentServiceAsync`, passing the component's configuration.
+4.  **DI and Instantiation**: The Component Host uses reflection to load the component's assembly, sets up a dependency injection container, and injects required services (`ILogger`, `IComponentSettings`, `IMessagePublisher`).
+5.  **Service Start**: The `ClusterManager` calls `StartHostServicesAsync` on the Component Host, which starts the message publisher first, followed by the component itself.
+6.  **State Management**: The Component Host monitors the component's state and reports errors or status changes.
+
+**Sample Scenario - File Watcher Component Startup:**
+*   **Input Configuration**:
+    ```json
+    {
+      "packageName": "FileWatcher",
+      "settings": {
+        "inputPath": "C:\\data\\input",
+        "filter": "*.xml"
       }
-    ]
-  }
-}
-```
+    }
+    ```
+*   **Process Flow**:
+    1.  `ClusterManager.StartInstanceOnNode()` is executed for a target node.
+    2.  The Node API on that machine starts a `ComponentHost.exe` process on an available port (e.g., 5001).
+    3.  The `ClusterManager` sends the configuration to `http://node-x:5001`.
+    4.  The Component Host loads the `FileWatcher.dll` assembly.
+    5.  It creates a DI container, providing an `IComponentSettings` object populated with the `inputPath` and `filter`.
+    6.  The `FileWatcherComponent`'s constructor receives the injected dependencies.
+    7.  Its `StartAsync()` method is called, which initializes a `FileSystemWatcher` to monitor `C:\data\input` for XML files.
+*   **Output**: An active `FileWatcherComponent` instance is now monitoring the specified directory, ready to process files.
 
-2. **Package and Deploy**
-- Create component package with metadata
-- Upload to cluster via Node Manager API
-- Component distributed to nodes
+### 4. **Message Publishing and Component Communication**
 
-### Example Use Cases
+**Process Description:**
+Components are designed to be loosely coupled and communicate through a message-driven pattern. A component processes an event and then uses an `IMessagePublisher` to send the result onward.
 
-- **File Processing Pipeline**: Watch directories → Transform files → Upload to cloud storage
-- **Scheduled Data Sync**: Cron trigger → Database extraction → API publishing  
-- **Event-Driven Workflows**: HTTP endpoint → Business logic → Multiple downstream systems
-- **ETL Operations**: Data extraction → Transformation → Multiple destination loading
+**Detailed Flow:**
+1.  **Trigger**: A component is triggered by an external event (e.g., a file is created, a Quartz.NET timer fires, or a Web API endpoint is called).
+2.  **Processing**: The component executes its business logic.
+3.  **Message Creation**: It creates an `IMessage` object, populating it with a source identifier, a timestamp, and a dictionary of properties containing the processed data or event details.
+4.  **Publishing**: It calls `_publisher.PublishAsync(message)`, handing the message off to its injected message publisher.
+5.  **Routing**: The message publisher (e.g., `TestPublisher`) processes the message. In a more advanced implementation, this could involve routing to a message bus like RabbitMQ or Azure Service Bus, where other components could be subscribed to listen for these messages.
 
-## Development and Extension
+**Sample Scenario - File Processing Workflow:**
+*   **Input**: A new file, `customer_data.xml`, appears in the directory monitored by a `FileWatcherComponent`.
+*   **Flow Sequence**:
+    1.  The `FileWatcherComponent`'s `OnFileCreated` event handler is triggered.
+    2.  It creates a `FileWatcherMessage` with properties like `fileName`, `filePath`, and `fileSize`.
+    3.  It calls `_publisher.PublishAsync(fileMessage)`.
+    4.  The message publisher receives the message and, based on its internal logic, might route it to a `DataProcessor` component.
+    5.  The `DataProcessor` component receives the message, reads the file from the specified path, transforms the data, and creates a new `ProcessedMessage`.
+    6.  It publishes this new message, which could then be consumed by a `DatabaseWriter` component to save the results.
+*   **Output**: The file is processed through a multi-stage, decoupled workflow.
 
-The platform is designed for extensibility:
+### 5. **Scaling and Load Distribution Process**
 
-- **Custom Components**: Implement `IComponent` for business logic
-- **Custom Publishers**: Implement `IMessagePublisher` for messaging patterns
-- **Custom Package Managers**: Extend package management capabilities
-- **Custom Node Services**: Add node-level functionality
+**Process Description:**
+TDIE supports horizontal scaling through the dynamic addition or removal of nodes, with the Node Manager automatically redistributing workloads.
 
-## Configuration Management
+**Detailed Flow:**
+1.  **Detection**: The Node Manager's `SyncCluster` method detects a change in the cluster's topology (a node is added or removed from configuration).
+2.  **Expansion**: For a new node, the flow described in "Cluster Initialization" is followed to synchronize packages and start new component instances, thus increasing overall capacity.
+3.  **Shrinkage**: For a removed node, the `ClusterManager` calls `ShrinkClusterAsync`. This method connects to the target node's API and gracefully shuts down all running Component Host processes. The workloads previously handled by this node are then automatically picked up by instances on the remaining nodes.
+4.  **Locking**: All scaling operations are protected by distributed locks to ensure consistency and prevent race conditions.
 
-Components are configured via key-value pairs, making them flexible:
+**Sample Scenario - Auto-scaling During High Load:**
+*   **Current State**: A 2-node cluster is running 4 `FileWatcher` instances on each node.
+*   **Trigger**: An administrator adds `tdie-node-3` to the configuration to handle a higher volume of incoming files.
+*   **Process Flow**:
+    1.  `SyncCluster()` detects the new node.
+    2.  It acquires a distributed lock for the cluster modification.
+    3.  It calls `_nodeSynchronizer.SynchronizeNodeAsync(node-3)` to upload all required packages.
+    4.  It then starts 4 new `FileWatcher` instances on `tdie-node-3`.
+*   **Output**: The cluster now has 12 `FileWatcher` instances running across 3 nodes, increasing processing capacity by 50%.
 
-```csharp
-// Component reads its configuration
-var inputPath = Settings.Properties["inputPath"];
-var batchSize = int.Parse(Settings.Properties["batchSize"]);
-```
+### 6. **Health Monitoring and Failure Recovery**
+
+**Process Description:**
+System reliability is maintained through continuous health monitoring at both the node and cluster levels, with mechanisms for automatic failure detection and workload redistribution.
+
+**Detailed Flow:**
+1.  **Node-Level Monitoring**: Each Node API runs a `ProcessStoreSystemSyncBackgroundService`, which periodically checks for "zombie" processes—processes that are in its database but no longer running on the OS—and cleans them up.
+2.  **Cluster-Level Monitoring**: The Node Manager periodically calls the `/api/node/stats` endpoint on each node to check its health.
+3.  **Failure Detection**: If a node is unreachable (e.g., HTTP requests time out), the Node Manager marks it as failed.
+4.  **Workload Redistribution**: During the next `SyncCluster` run, the failed node is treated as a "removed" node. The `ClusterManager` identifies the components that were running on it and starts replacement instances on the remaining healthy nodes.
+
+**Sample Scenario - Node Failure Recovery:**
+*   **Initial State**: A 3-node cluster, with each node running two `QuartzScheduler` components.
+*   **Failure Event**: `tdie-node-2` becomes unreachable due to a hardware failure.
+*   **Recovery Flow**:
+    1.  The Node Manager's sync cycle fails to get a health status from `tdie-node-2`.
+    2.  It marks `tdie-node-2` as inactive.
+    3.  It identifies the two `QuartzScheduler` instances that were assigned to the failed node.
+    4.  It acquires distributed locks and starts two new replacement instances, placing one on `tdie-node-1` and the other on `tdie-node-3`.
+*   **Output**: Fault tolerance is maintained. All scheduled jobs continue to run without interruption on the remaining healthy nodes.
 
 ## API Integration
 
