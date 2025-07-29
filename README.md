@@ -1050,7 +1050,7 @@ Simple implementation for testing and development that logs messages and can per
 
 ## How It Works
 
-TDIE operates through a sophisticated distributed orchestration model with timer-based synchronization, distributed locking, and automated health monitoring. The following detailed flows demonstrate how the platform handles complex distributed processing scenarios in practice.
+TDIE operates using a thought exercise on distributed orchestration with timer-based synchronization, distributed locking, and automated health monitoring. The following detailed flows demonstrate how the platform is intended to handle distributed processing scenarios in practice.
 
 ### 1. **Cluster Initialization and Synchronization Process**
 
