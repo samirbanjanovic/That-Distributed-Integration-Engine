@@ -1,26 +1,26 @@
 # That Distributed Integration Engine (TDIE)
 
-A .NET Core distributed process orchestration platform designed for scalable job processing across multiple nodes in a cluster. TDIE provides a flexible framework for building, deploying, and managing distributed integration components with built-in clustering, process management, and extensibility.
+A .NET Core distributed process orchestration platform built as an experiment in scalable job processing across multiple nodes. TDIE explores a component-based architecture where business logic is packaged into reusable components that can be deployed and managed across a cluster of machines.
 
 ## Overview
 
-TDIE is an experiement in distributed system that enables horizontal scaling of job processing by distributing workloads across multiple nodes. The platform uses a component-based architecture where business logic is packaged into reusable components that can be deployed and managed across a cluster of machines.
+TDIE is an experiment in distributed systems that explores horizontal scaling of job processing by distributing workloads across multiple nodes. The platform uses a component-based architecture where business logic is packaged into reusable components that can be deployed and managed across a cluster of machines.
 
 ### Key Capabilities
 
-- **Distributed Process Orchestration**: Automatically distribute and manage component instances across cluster nodes
-- **Dynamic Component Loading**: Hot-deploy components without system restarts
-- **Cluster Management**: Automatic node discovery, health monitoring, and workload balancing
-- **Message-Driven Architecture**: Publish/subscribe messaging between components
-- **Package Management**: Centralized deployment and versioning of component packages
-- **RESTful APIs**: Complete REST APIs for cluster and node management
+- **Distributed Process Orchestration**: Attempts to distribute and manage component instances across cluster nodes
+- **Dynamic Component Loading**: Supports hot-deployment of components without system restarts
+- **Cluster Management**: Basic node discovery, health monitoring, and workload balancing
+- **Message-Driven Architecture**: Simple publish/subscribe messaging between components
+- **Package Management**: Basic deployment and versioning of component packages
+- **RESTful APIs**: REST APIs for cluster and node management
 - **Extensible Framework**: Plugin architecture for custom components and message publishers
 
 ## Architecture
 
 ### Distributed Cluster Architecture Diagram
 
-The following diagram illustrates how TDIE operates in a 3-node cluster environment, showcasing the distributed orchestration, component hosting, and inter-node communication patterns:
+The following diagram shows how TDIE operates in a 3-node cluster environment, demonstrating the distributed orchestration, component hosting, and inter-node communication patterns:
 
 ```mermaid
 graph TB
@@ -186,7 +186,7 @@ graph TB
 ### Architecture Flow Description
 
 #### **1. Cluster Orchestration (Master Node)**
-- **NodeManagerComponent**: Runs as an IComponent within a Component Host, demonstrating TDIE's extensible architecture
+- **NodeManagerComponent**: Runs as an IComponent within a Component Host, demonstrating the experimental extensible architecture
 - **Timer-Based Synchronization**: Every 50 seconds, triggers cluster-wide synchronization operations
 - **ClusterManager**: Coordinates component distribution, node expansion/shrinkage, and instance lifecycle management
 - **Distributed Locking**: Uses SQL Server-based locks via Medallion.Threading.Sql for cluster-wide coordination
@@ -222,38 +222,38 @@ Component Host Provisioning → Assembly Loading → Component Instantiation
 - **Load Balancing**: Components distributed across available nodes based on capacity
 - **Fault Tolerance**: Failed nodes detected and workloads redistributed automatically
 
-#### **7. Extensible Architecture Demonstration**
+#### **7. Extensible Architecture Experiment**
 - **Uniform Interface**: File Watchers, Schedulers, Web APIs, and the Node Manager itself all implement IComponent
 - **Same Lifecycle**: All components use StartAsync/StopAsync pattern
 - **Configuration Consistency**: All components configured via key-value pairs
 - **Deployment Uniformity**: All components packaged and deployed identically
 
-This architecture showcases TDIE's core principle: **sophisticated distributed orchestration built from the same foundational abstractions as simple components**, enabling unlimited scalability and extensibility through a unified component model.
+This architecture demonstrates an experimental approach where complex distributed orchestration is built from the same foundational abstractions as simple components, exploring scalability through a unified component model.
 
 ### Core Components
 
 #### 1. **Node Manager** ([`TDIE.Components.NodeManager`](src/TDIE.Components.NodeManager/))
-The Node Manager serves as the central orchestrator and brain of the distributed cluster. It operates as a master component that coordinates all cluster-wide operations and maintains the overall health of the distributed system.
+The Node Manager acts as the central orchestrator for the distributed cluster. It coordinates cluster-wide operations and maintains the overall health of the distributed system.
 
-**Core Responsibilities:**
-- **Cluster Synchronization**: Continuously monitors and synchronizes the state of all nodes in the cluster, ensuring consistency across the distributed environment
-- **Component Distribution**: Intelligently distributes component instances across available nodes based on load balancing algorithms and resource availability
-- **Node Health Monitoring**: Tracks the health and performance of individual nodes, detecting failures and initiating recovery procedures
-- **Package Deployment**: Manages the deployment and versioning of component packages across the entire cluster
-- **Distributed Locking**: Coordinates access to shared resources using distributed locks to prevent conflicts during concurrent operations
+**Responsibilities:**
+- **Cluster Synchronization**: Monitors and synchronizes the state of all nodes in the cluster
+- **Component Distribution**: Distributes component instances across available nodes
+- **Node Health Monitoring**: Tracks the health and performance of individual nodes
+- **Package Deployment**: Manages the deployment and versioning of component packages
+- **Distributed Locking**: Coordinates access to shared resources using distributed locks
 
 **Architecture Components:**
-- **Cluster Manager**: Handles node addition, removal, and load distribution strategies
-- **Node Synchronizer**: Ensures package versions and configurations are consistent across all nodes
+- **Cluster Manager**: Handles node addition, removal, and load distribution
+- **Node Synchronizer**: Ensures package versions and configurations are consistent across nodes
 - **Distributed Lock Factory**: Provides cluster-wide locking mechanisms using SQL Server-based distributed locks
 - **Component Instance Manager**: Tracks and manages component instances across the cluster
 
 **Operational Flow:**
 1. **Cluster Discovery**: Reads cluster configuration and discovers available nodes
 2. **Node Synchronization**: Ensures all nodes have the required packages and configurations
-3. **Instance Distribution**: Distributes component instances based on configured rules and load balancing
-4. **Health Monitoring**: Continuously monitors node health and redistributes workloads when failures occur
-5. **Package Synchronization**: Automatically deploys new package versions across the cluster
+3. **Instance Distribution**: Distributes component instances based on configured rules
+4. **Health Monitoring**: Monitors node health and redistributes workloads when failures occur
+5. **Package Synchronization**: Deploys new package versions across the cluster
 
 **REST API Endpoints:**
 - `GET /api/master` - Cluster management endpoints (implementation in progress)
@@ -303,22 +303,22 @@ The Node Manager uses JSON configuration files to define cluster topology, node 
   - `nodeApiUri`: Base URI for the Node API endpoint
 
 #### 2. **Component Host** ([`TDIE.ComponentHost`](src/TDIE.ComponentHost/))
-The Component Host is a lightweight runtime environment that demonstrates TDIE's extensible architecture. It serves as the fundamental building block for all component execution within the distributed system, providing process isolation, lifecycle management, and dynamic service composition.
+The Component Host is a lightweight runtime environment that serves as a building block for component execution within the distributed system, providing process isolation, lifecycle management, and dynamic service composition.
 
-**Core Responsibilities:**
-- **Dynamic Component Loading**: Dynamically loads and instantiates components from assemblies at runtime using reflection and dependency injection
-- **Isolated Runtime Environment**: Provides complete process isolation for component instances with independent configuration, logging, and resource management
-- **Lifecycle Orchestration**: Manages the complete component lifecycle from configuration through startup, runtime, and graceful shutdown
-- **Dependency Injection Container**: Creates and manages a comprehensive DI container with automatic service registration and resolution
-- **Configuration-Driven Assembly Loading**: Loads components and message publishers based on assembly paths and fully qualified class names provided through REST APIs
-- **State Management**: Tracks and manages component and host states with comprehensive error handling and recovery mechanisms
+**Responsibilities:**
+- **Dynamic Component Loading**: Loads and instantiates components from assemblies at runtime
+- **Isolated Runtime Environment**: Provides process isolation for component instances
+- **Lifecycle Orchestration**: Manages the complete component lifecycle from configuration through startup to shutdown
+- **Dependency Injection Container**: Creates and manages a DI container with automatic service registration
+- **Configuration-Driven Assembly Loading**: Loads components and message publishers based on assembly paths and class names
+- **State Management**: Tracks and manages component and host states with error handling
 
-**Advanced Architecture Components:**
+**Architecture Components:**
 *ComponentHostBackgroundService*: The core orchestration engine that manages component instances
 - **Service Provider Management**: Creates isolated `IServiceProvider` instances with component-specific service registrations
 - **Assembly Loading**: Dynamically loads assemblies using `GetTypeFromAssembly()` for both components and message publishers
 - **Configuration Validation**: Validates assembly paths, class names, and component compatibility before instantiation
-- **Graceful Error Handling**: Implements comprehensive error handling with state tracking and rollback capabilities
+- **Error Handling**: Implements error handling with state tracking and rollback capabilities
 
 *Dependency Injection Pipeline*:
 ```csharp
@@ -340,7 +340,7 @@ _serviceProvider = new ServiceCollection()
 - Type validation ensures components implement required interfaces (`IComponent`, `IMessagePublisher`)
 
 **Component Host State Machine:**
-The Component Host implements a sophisticated state machine with the following states:
+The Component Host implements a state machine with the following states:
 - **`AwaitingConfiguration`**: Initial state waiting for component and message publisher configurations
 - **`Configured`**: Assembly loading completed, services configured, ready to start
 - **`Started`**: All services running, component and message publisher active
@@ -349,8 +349,7 @@ The Component Host implements a sophisticated state machine with the following s
 - **`Errored`**: Error state due to configuration, loading, or runtime failures
 - **`Destroyed`**: Resources cleaned up, host ready for termination
 
-**Advanced Lifecycle Management:**
-
+**Lifecycle Management:**
 *Configuration Phase*:
 1. **Assembly Validation**: Validates assembly paths and component types
 2. **Message Publisher Resolution**: Determines if component requires message publisher
@@ -393,8 +392,7 @@ The Component Host implements a sophisticated state machine with the following s
 - `PUT /api/componentHost/services/messagePublisher/{packageName}/stop` - Stop a message publisher service
 
 **Extensible Architecture Pattern:**
-
-The Component Host exemplifies TDIE's extensible architecture principle - **even complex orchestration components like the Node Manager are simply implementations of the same `IComponent` interface**. This creates a unified, recursive architecture where:
+The Component Host demonstrates an experimental extensible architecture where complex orchestration components like the Node Manager are implementations of the same `IComponent` interface. This creates a recursive architecture where:
 
 *Uniform Interface Implementation*:
 ```csharp
@@ -438,8 +436,7 @@ Every component, regardless of complexity, uses the same deployment model:
 - State management follows the same patterns regardless of component complexity
 
 **Runtime Component Composition:**
-
-The Component Host enables sophisticated runtime composition:
+The Component Host enables runtime composition:
 
 *Dynamic Service Discovery*:
 - Components can be loaded from any assembly path
@@ -449,15 +446,14 @@ The Component Host enables sophisticated runtime composition:
 *Hot Deployment*:
 - New components can be deployed without system restart
 - Existing components can be stopped, updated, and restarted
-- Package versioning ensures safe updates with rollback capabilities
+- Package versioning supports updates with rollback capabilities
 
 *Isolation and Safety*:
 - Each component instance runs in its own process
 - Configuration errors are isolated to individual components
 - Component failures don't affect other components or the broader system
 
-**Advanced Features:**
-
+**Features:**
 *Message Publisher Integration*:
 - Automatic detection of components that require message publishers
 - Dynamic loading and configuration of publisher implementations
@@ -468,7 +464,7 @@ The Component Host enables sophisticated runtime composition:
 - Assembly paths and class names are resolved at runtime
 - Settings are injected automatically through dependency injection
 
-*Comprehensive Monitoring*:
+*Monitoring*:
 - Host state tracking with detailed error information
 - Component and message publisher state monitoring
 - Correlation IDs for distributed logging and troubleshooting
@@ -478,21 +474,21 @@ This extensible design means that adding new functionality to TDIE requires only
 2. Packaging the assembly with a manifest
 3. Deploying through the standard package management system
 
-The Node Manager orchestrating hundreds of components across dozens of nodes is architecturally identical to a simple file watcher component - both are just implementations of `IComponent` running within Component Hosts.
+The Node Manager orchestrating components across nodes is architecturally similar to a simple file watcher component - both are implementations of `IComponent` running within Component Hosts.
 
 #### 3. **Node API** ([`TDIE.NodeApi`](src/TDIE.NodeApi/))
-The Node API is a RESTful service that runs on each node in the cluster, acting as the local agent for the Node Manager. It provides a standardized interface for managing the node's lifecycle, deploying component packages, and monitoring local processes.
+The Node API is a RESTful service that runs on each node in the cluster, acting as the local agent for the Node Manager. It provides an interface for managing the node's lifecycle, deploying component packages, and monitoring local processes.
 
-**Key Responsibilities:**
+**Responsibilities:**
 - **Process Management**: Starting, stopping, and monitoring component host processes
-- **Package Management**: Receiving, installing, and updating component packages pushed by the Node Manager
-- **Health and Status Reporting**: Providing health status, performance metrics, and operational logs to the Node Manager
-- **Local Resource Access**: Exposing controlled access to local node resources as required for component operations
+- **Package Management**: Receiving, installing, and updating component packages
+- **Health and Status Reporting**: Providing health status, performance metrics, and operational logs
+- **Local Resource Access**: Exposing controlled access to local node resources
 
 **REST API Endpoints:**
 
 *Node Management:*
-- `GET /api/node/stats` - Get comprehensive node system statistics including environment info, process details, and network interfaces
+- `GET /api/node/stats` - Get node system statistics including environment info, process details, and network interfaces
 - `GET /api/node/stats/processes` - Get statistics for all running processes on the node
 - `GET /api/node/stats/processes/{packageName}` - Get process statistics filtered by package name
 
@@ -515,9 +511,9 @@ The Node API is a RESTful service that runs on each node in the cluster, acting 
 The Node API abstracts node-specific operations, allowing the Node Manager to orchestrate the cluster without needing to know the underlying details of each machine. It maintains a local process store using LiteDB for tracking component instances and their states.
 
 #### 4. **Package Management** ([`TDIE.PackageManager.Basic`](src/TDIE.PackageManager.Basic/))
-The Package Management system provides comprehensive capabilities for deploying, versioning, and managing component packages across the distributed cluster. It handles the complete lifecycle of component packages from upload through deployment and cleanup.
+The Package Management system provides capabilities for deploying, versioning, and managing component packages across the distributed cluster. It handles the lifecycle of component packages from upload through deployment and cleanup.
 
-**Core Responsibilities:**
+**Responsibilities:**
 - **Package Deployment**: Handles upload, extraction, and installation of component packages
 - **Version Management**: Manages package versioning with support for upgrades and rollbacks
 - **Package Validation**: Validates package structure, metadata, and dependencies before deployment
@@ -700,7 +696,7 @@ await _publisher.PublishAsync(new Message
 
 ### Advanced Component Example
 
-Here's a comprehensive example of a file processing component that demonstrates best practices:
+Here's an example of a file processing component that demonstrates typical patterns:
 
 ```csharp
 public class FileProcessorComponent : IComponent
@@ -1012,7 +1008,7 @@ Example `manifest.json`:
 
 1. **Package Creation**: Create a ZIP file with your component assembly and manifest
 2. **Upload**: Use the Node Manager API to upload the package to the cluster
-3. **Distribution**: The Node Manager automatically distributes the package to target nodes
+3. **Distribution**: The Node Manager distributes the package to target nodes
 4. **Instantiation**: Create component instances with specific configurations
 5. **Monitoring**: Monitor component health and performance through the Node API
 
@@ -1071,7 +1067,7 @@ Trigger Event → Component Processing → Message Publishing → Next Component
 ```
 
 ### 4. **Scaling and Distribution**
-- Components are automatically distributed across available nodes
+- Components are distributed across available nodes
 - Failed nodes are detected and workloads redistributed
 - New nodes can be added dynamically to increase capacity
 
@@ -1102,7 +1098,7 @@ Trigger Event → Component Processing → Message Publishing → Next Component
 2. **Package and Deploy**
 - Create component package with metadata
 - Upload to cluster via Node Manager API
-- Component automatically distributed to nodes
+- Component distributed to nodes
 
 ### Example Use Cases
 
@@ -1122,7 +1118,7 @@ The platform is designed for extensibility:
 
 ## Configuration Management
 
-Components are configured via key-value pairs, making them highly flexible:
+Components are configured via key-value pairs, making them flexible:
 
 ```csharp
 // Component reads its configuration
@@ -1159,3 +1155,8 @@ src/
 ├── TDIE.Tester/                     # Testing utilities
 ```
 
+---
+
+**Documentation Note**: This README was generated with assistance from Claude (Anthropic), an AI assistant, to help structure and document the TDIE experimental distributed integration platform.
+
+*— Claude*
