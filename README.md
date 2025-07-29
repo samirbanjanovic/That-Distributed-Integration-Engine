@@ -4,7 +4,7 @@ A .NET Core distributed process orchestration platform designed for scalable job
 
 ## Overview
 
-TDIE is a sophisticated distributed system that enables horizontal scaling of job processing by distributing workloads across multiple nodes. The platform uses a component-based architecture where business logic is packaged into reusable components that can be deployed and managed across a cluster of machines.
+TDIE is an experiement in distributed system that enables horizontal scaling of job processing by distributing workloads across multiple nodes. The platform uses a component-based architecture where business logic is packaged into reusable components that can be deployed and managed across a cluster of machines.
 
 ### Key Capabilities
 
@@ -17,6 +17,218 @@ TDIE is a sophisticated distributed system that enables horizontal scaling of jo
 - **Extensible Framework**: Plugin architecture for custom components and message publishers
 
 ## Architecture
+
+### Distributed Cluster Architecture Diagram
+
+The following diagram illustrates how TDIE operates in a 3-node cluster environment, showcasing the distributed orchestration, component hosting, and inter-node communication patterns:
+
+```mermaid
+graph TB
+    subgraph "TDIE Distributed Cluster Architecture"
+        subgraph "Master Node (Node 1 - tdie-node-1)"
+            subgraph "Node Manager Process"
+                NM[NodeManagerComponent<br/>IComponent Implementation]
+                CM[ClusterManager<br/>Node Distribution Logic]
+                NS[NodeSynchronizer<br/>Package Synchronization]
+                DLF[DistributedLockFactory<br/>SQL Server Locks]
+                MAPI[Master Web API<br/>:7777/api/master]
+            end
+            
+            subgraph "Component Host Instances"
+                CH1A[Component Host A<br/>:5000]
+                CH1B[Component Host B<br/>:5001]
+                CH1C[Component Host C<br/>:5002]
+            end
+            
+            subgraph "Node API"
+                N1API[Node API<br/>:5100/api/node]
+                PM1[Package Manager<br/>LiteDB Storage]
+                PROC1[Process Manager<br/>Local Process Control]
+            end
+        end
+
+        subgraph "Worker Node 2 (tdie-node-2)"
+            subgraph "Component Host Instances"
+                CH2A[Component Host A<br/>:5000]
+                CH2B[Component Host B<br/>:5001]
+                CH2C[Component Host C<br/>:5002]
+            end
+            
+            subgraph "Node API"
+                N2API[Node API<br/>:5100/api/node]
+                PM2[Package Manager<br/>LiteDB Storage]
+                PROC2[Process Manager<br/>Local Process Control]
+            end
+        end
+
+        subgraph "Worker Node 3 (tdie-node-3)"
+            subgraph "Component Host Instances"
+                CH3A[Component Host A<br/>:5000]
+                CH3B[Component Host B<br/>:5001]
+                CH3C[Component Host C<br/>:5002]
+            end
+            
+            subgraph "Node API"
+                N3API[Node API<br/>:5100/api/node]
+                PM3[Package Manager<br/>LiteDB Storage]
+                PROC3[Process Manager<br/>Local Process Control]
+            end
+        end
+
+        subgraph "Components Running in Component Hosts"
+            subgraph "Component Types (IComponent Implementations)"
+                FW[File Watcher<br/>Monitor Directories]
+                QS[Quartz Scheduler<br/>Cron Jobs]
+                WA[Web API<br/>REST Endpoints]
+                DR[Database Replication<br/>Data Sync]
+                CUSTOM[Custom Components<br/>Business Logic]
+            end
+        end
+
+        subgraph "Shared Infrastructure"
+            subgraph "SQL Server Database"
+                LOCKS[Distributed Locks Table<br/>Medallion.Threading.Sql]
+                META[Metadata Storage<br/>Component Configurations]
+            end
+            
+            subgraph "Package Repository"
+                PKG1[componentHost.zip]
+                PKG2[fileWatcher.zip]
+                PKG3[quartzScheduler.zip]
+                PKG4[webApiComponent.zip]
+                PKG5[customComponent.zip]
+            end
+        end
+    end
+
+    %% Connections - Cluster Management
+    NM -->|Timer: 50s Sync| CM
+    CM -->|Distributed Operations| DLF
+    CM -->|Package Deployment| NS
+    NS -->|HTTP Requests| N1API
+    NS -->|HTTP Requests| N2API
+    NS -->|HTTP Requests| N3API
+
+    %% Connections - Component Host Management
+    CM -->|Start/Stop/Configure| CH1A
+    CM -->|Start/Stop/Configure| CH1B
+    CM -->|Start/Stop/Configure| CH1C
+    CM -->|Start/Stop/Configure| CH2A
+    CM -->|Start/Stop/Configure| CH2B
+    CM -->|Start/Stop/Configure| CH2C
+    CM -->|Start/Stop/Configure| CH3A
+    CM -->|Start/Stop/Configure| CH3B
+    CM -->|Start/Stop/Configure| CH3C
+
+    %% Connections - Node API to Local Services
+    N1API -->|Process Control| PROC1
+    N1API -->|Package Operations| PM1
+    N2API -->|Process Control| PROC2
+    N2API -->|Package Operations| PM2
+    N3API -->|Process Control| PROC3
+    N3API -->|Package Operations| PM3
+
+    %% Connections - Component Hosting
+    CH1A -.->|Hosts| FW
+    CH1B -.->|Hosts| QS
+    CH1C -.->|Hosts| WA
+    CH2A -.->|Hosts| DR
+    CH2B -.->|Hosts| CUSTOM
+    CH2C -.->|Hosts| FW
+    CH3A -.->|Hosts| QS
+    CH3B -.->|Hosts| WA
+    CH3C -.->|Hosts| DR
+
+    %% Connections - Database Access
+    DLF -->|Acquire/Release Locks| LOCKS
+    CM -->|Read Configurations| META
+    NS -->|Read Configurations| META
+
+    %% Connections - Package Repository
+    NS -->|Deploy Packages| PKG1
+    NS -->|Deploy Packages| PKG2
+    NS -->|Deploy Packages| PKG3
+    NS -->|Deploy Packages| PKG4
+    NS -->|Deploy Packages| PKG5
+
+    %% Process Management
+    PROC1 -->|Launch/Kill| CH1A
+    PROC1 -->|Launch/Kill| CH1B
+    PROC1 -->|Launch/Kill| CH1C
+    PROC2 -->|Launch/Kill| CH2A
+    PROC2 -->|Launch/Kill| CH2B
+    PROC2 -->|Launch/Kill| CH2C
+    PROC3 -->|Launch/Kill| CH3A
+    PROC3 -->|Launch/Kill| CH3B
+    PROC3 -->|Launch/Kill| CH3C
+
+    %% External API Access
+    EXT[External Clients<br/>REST API Calls] -->|Cluster Management| MAPI
+    EXT -->|Direct Node Access| N1API
+    EXT -->|Direct Node Access| N2API
+    EXT -->|Direct Node Access| N3API
+
+    classDef masterNode fill:#e1f5fe,stroke:#0277bd,stroke-width:2px
+    classDef workerNode fill:#f3e5f5,stroke:#7b1fa2,stroke-width:2px
+    classDef componentHost fill:#fff3e0,stroke:#f57c00,stroke-width:2px
+    classDef component fill:#e8f5e8,stroke:#388e3c,stroke-width:2px
+    classDef infrastructure fill:#fce4ec,stroke:#c2185b,stroke-width:2px
+    classDef api fill:#e3f2fd,stroke:#1976d2,stroke-width:2px
+
+    class NM,CM,NS,DLF,MAPI masterNode
+    class N2API,PM2,PROC2,N3API,PM3,PROC3 workerNode
+    class CH1A,CH1B,CH1C,CH2A,CH2B,CH2C,CH3A,CH3B,CH3C componentHost
+    class FW,QS,WA,DR,CUSTOM component
+    class LOCKS,META,PKG1,PKG2,PKG3,PKG4,PKG5 infrastructure
+    class N1API,PM1,PROC1 api
+```
+
+### Architecture Flow Description
+
+#### **1. Cluster Orchestration (Master Node)**
+- **NodeManagerComponent**: Runs as an IComponent within a Component Host, demonstrating TDIE's extensible architecture
+- **Timer-Based Synchronization**: Every 50 seconds, triggers cluster-wide synchronization operations
+- **ClusterManager**: Coordinates component distribution, node expansion/shrinkage, and instance lifecycle management
+- **Distributed Locking**: Uses SQL Server-based locks via Medallion.Threading.Sql for cluster-wide coordination
+
+#### **2. Component Distribution Pattern**
+```
+Master Node Decision → Distributed Lock Acquisition → Package Synchronization → 
+Component Host Provisioning → Component Instantiation → Health Monitoring
+```
+
+#### **3. Node Communication**
+- **RESTful APIs**: All inter-node communication via HTTP/HTTPS REST APIs
+- **Node API Endpoints**: Each node exposes standardized `/api/node` endpoints for:
+  - Process management (`/processes`)
+  - Package management (`/packages`) 
+  - Health monitoring (`/stats`)
+
+#### **4. Component Host Isolation**
+- **Process Isolation**: Each component runs in its own Component Host process
+- **Dynamic Port Allocation**: Ports assigned dynamically (starting from 5000)
+- **Independent Lifecycles**: Components can be started/stopped/updated independently
+- **Configuration-Driven**: All components use same IComponent interface regardless of complexity
+
+#### **5. Package Management Flow**
+```
+Package Upload → Validation → Distribution to Nodes → Local Storage → 
+Component Host Provisioning → Assembly Loading → Component Instantiation
+```
+
+#### **6. Distributed Operations**
+- **Cluster Expansion**: New nodes automatically receive all required packages and component instances
+- **Cluster Shrinkage**: Components gracefully shut down before node removal
+- **Load Balancing**: Components distributed across available nodes based on capacity
+- **Fault Tolerance**: Failed nodes detected and workloads redistributed automatically
+
+#### **7. Extensible Architecture Demonstration**
+- **Uniform Interface**: File Watchers, Schedulers, Web APIs, and the Node Manager itself all implement IComponent
+- **Same Lifecycle**: All components use StartAsync/StopAsync pattern
+- **Configuration Consistency**: All components configured via key-value pairs
+- **Deployment Uniformity**: All components packaged and deployed identically
+
+This architecture showcases TDIE's core principle: **sophisticated distributed orchestration built from the same foundational abstractions as simple components**, enabling unlimited scalability and extensibility through a unified component model.
 
 ### Core Components
 
@@ -91,7 +303,7 @@ The Node Manager uses JSON configuration files to define cluster topology, node 
   - `nodeApiUri`: Base URI for the Node API endpoint
 
 #### 2. **Component Host** ([`TDIE.ComponentHost`](src/TDIE.ComponentHost/))
-The Component Host is a sophisticated, lightweight runtime environment that demonstrates the true power of TDIE's extensible architecture. It serves as the fundamental building block for all component execution within the distributed system, providing process isolation, lifecycle management, and dynamic service composition.
+The Component Host is a lightweight runtime environment that demonstrates TDIE's extensible architecture. It serves as the fundamental building block for all component execution within the distributed system, providing process isolation, lifecycle management, and dynamic service composition.
 
 **Core Responsibilities:**
 - **Dynamic Component Loading**: Dynamically loads and instantiates components from assemblies at runtime using reflection and dependency injection
@@ -102,7 +314,6 @@ The Component Host is a sophisticated, lightweight runtime environment that demo
 - **State Management**: Tracks and manages component and host states with comprehensive error handling and recovery mechanisms
 
 **Advanced Architecture Components:**
-
 *ComponentHostBackgroundService*: The core orchestration engine that manages component instances
 - **Service Provider Management**: Creates isolated `IServiceProvider` instances with component-specific service registrations
 - **Assembly Loading**: Dynamically loads assemblies using `GetTypeFromAssembly()` for both components and message publishers
