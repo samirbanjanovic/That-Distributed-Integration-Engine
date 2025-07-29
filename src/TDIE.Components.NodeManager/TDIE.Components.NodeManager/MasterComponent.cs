@@ -69,9 +69,9 @@ namespace TDIE.Components.NodeManager
                 _clusterManager = new ClusterManager(initialNodes, _nodeSynchronizer, _distributedLockFactory);
             }
 
-            //_syncTimer = new Timer(double.Parse(_masterConfiguration["Cluster:SyncInterval"] as string ?? "50000"));
-            //_syncTimer.Elapsed += async (s, e) => await SyncCluster();
-            //_syncTimer.Enabled = true;
+            _syncTimer = new Timer(double.Parse(_masterConfiguration["Cluster:SyncInterval"] as string ?? "50000"));
+            _syncTimer.Elapsed += async (s, e) => await SyncCluster();
+            _syncTimer.Enabled = true;
 
             await SyncCluster();
 
@@ -102,19 +102,17 @@ namespace TDIE.Components.NodeManager
                 var nodesToRemove = clusterNodes.Where(x => !registeredNodes.Select(rn => rn.NetworkName).Contains(x.NetworkName));
                 if (nodesToRemove.Any())
                 {
-                    nodesToRemove//.AsParallel()
-                                 //.ForAll(async node => await _clusterManager.ShrinkClusterAsync(node));                                
-                                .Select(async node => await _clusterManager.ShrinkClusterAsync(node))
-                                .ToList();
+                    nodesToRemove.AsParallel()
+                                 .ForAll(async node => await _clusterManager.ShrinkClusterAsync(node))                                
+                                 .ToList();
                 }   
 
                 // expand cluster using new nodes
                 var newNodes = registeredNodes.Where(x => !clusterNodes.Select(cn => cn.NetworkName).Contains(x.NetworkName));
                 if (newNodes.Any())
                 {
-                    newNodes//.AsParallel()
-                            //.ForAll(async node => await _clusterManager.ExpandClusterAsync(node));
-                            .Select(async node => await _clusterManager.ExpandClusterAsync(node))
+                    newNodes.AsParallel()
+                            .ForAll(async node => await _clusterManager.ExpandClusterAsync(node))
                             .ToList();
                 }
 
@@ -123,9 +121,8 @@ namespace TDIE.Components.NodeManager
 
                 if (remainingNodes.Any())
                 {
-                    remainingNodes//.AsParallel()
-                                  //.ForAll(async node => await _clusterManager.SyncNode(node));
-                                  .Select(async node => await _clusterManager.SyncNode(node))
+                    remainingNodes.AsParallel()
+                                  .ForAll(async node => await _clusterManager.SyncNode(node))
                                   .ToList();
                 }
             }

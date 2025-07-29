@@ -3,41 +3,41 @@
     {
       "name": "ComponentHostProcess",
       "version": "1.0.0",
-      "packagePath": "C:\\repos\\Integration Platform\\TDIE.ComponentHost.WebApi\\TDIE.ComponentHost.WebApi\\bin\\Release\\netcoreapp2.2\\componentHost.zip"
+      "packagePath": "\\\\node-share\\repos\\Integration Platform\\TDIE.ComponentHost.WebApi\\TDIE.ComponentHost.WebApi\\bin\\Release\\netcoreapp2.2\\componentHost.zip"
     }
   ],
   "componnetHostPackageName": "componentHostProcess",
   "nodeServers": [
-    //{
-    //  "networkName": "LOUTFS01",
-    //  "networkIp": "10.198.10.21",
-    //  "nodeApiUri": "https://LOUTFS01:5000"
-    //},
-    //{
-    //  "networkName": "LT10FL9SBH2",
-    //  "networkIp": "10.198.30.27",
-    //  "nodeApiUri": "https://LT10FL9SBH2:5000"
-    //},
-    //{
-    //  "networkName": "LOUTFS02",
-    //  "networkIp": "10.198.10.21",
-    //  "nodeApiUri": "https://LOUTFS01:5000"
-    //},
     {
-      "networkName": "localhost",
-      "networkIp": "10.198.30.27",
-      "nodeApiUri": "https://localhost:5100"
+     "networkName": "tdie-node-1",
+     "networkIp": "10.0.10.21",
+     "nodeApiUri": "https://n1.tdie.skynet.home"
+    },
+    {
+     "networkName": "tdie-node-2",
+     "networkIp": "10.0.10.22",
+     "nodeApiUri": "https://n2.tdie.skynet.home"
+    },
+    {
+     "networkName": "tdie-node-3",
+     "networkIp": "10.0.10.23",
+     "nodeApiUri": "https://n3.tdie.skynet.home"
+    },
+    {
+      "networkName": "tdie-node-4",
+      "networkIp": "10.0.10.24",
+      "nodeApiUri": "https://n4.tdie.skynet.home"
     }
-    //,
-    //{
-    //  "networkName": "WNODE02",
-    //  "networkIp": "10.198.10.23",
-    //  "nodeApiUri": "https://WNODE02:5000"
-    //},
-    //{
-    //  "networkName": "WNODE03",
-    //  "networkIp": "10.198.10.24",
-    //  "nodeApiUri": "https://WNODE03:5000"
-    //}
+    ,
+    {
+     "networkName": "tdie-node-5",
+     "networkIp": "10.0.10.25",
+     "nodeApiUri": "https://n5.tdie.skynet.home"
+    },
+    {
+     "networkName": "tdie-node-6",
+     "networkIp": "10.0.10.26",
+     "nodeApiUri": "https://n6.tdie.skynet.home"
+    }
   ]
 }
