@@ -1,6 +1,6 @@
 # That Distributed Integration Engine (TDIE)
 
-A comprehensive .NET Core distributed process orchestration platform designed for scalable job processing across multiple nodes in a cluster. TDIE provides a flexible framework for building, deploying, and managing distributed integration components with built-in clustering, process management, and extensibility.
+A .NET Core distributed process orchestration platform designed for scalable job processing across multiple nodes in a cluster. TDIE provides a flexible framework for building, deploying, and managing distributed integration components with built-in clustering, process management, and extensibility.
 
 ## Overview
 
@@ -947,3 +947,4 @@ src/
 ├── TDIE.Server/                     # Server engine
 ├── TDIE.Tester/                     # Testing utilities
 ```
+
