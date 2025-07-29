@@ -1185,6 +1185,47 @@ TDIE supports horizontal scaling through the dynamic addition or removal of node
     4.  It then starts 4 new `FileWatcher` instances on `tdie-node-3`.
 *   **Output**: The cluster now has 12 `FileWatcher` instances running across 3 nodes, increasing processing capacity by 50%.
 
+### Shannon Diversity Index - A Thought Exercise
+
+As part of exploring different approaches to workload distribution, the codebase includes an implementation of the Shannon Diversity Index calculation in `StatsExtensions.cs`. This was a thought exercise in applying ecological diversity metrics to distributed systems.
+
+#### **The Basic Idea**
+
+The Shannon Diversity Index measures species diversity in ecosystems. The thought experiment was: what if we treated component types as "species" and nodes as "habitats"?
+
+**Implementation:**
+```csharp
+public static double Evenness(this IEnumerable<ComponentHostInstanceSettings> components)
+{
+    var sampleSize = components.Count();
+    var componentTypeGroups = components.GroupBy(x => x.PackageName).ToDictionary(x => x.Key, x => x.ToArray());
+
+    var shannonDiversityIndex = componentTypeGroups
+        .Select(x => (x.Key, (x.Value.Length / (double)sampleSize)))
+        .Select(x => x.Item2 * Math.Log(x.Item2))
+        .Sum() * -1;
+
+    double systemEvenness = shannonDiversityIndex / Math.Log(componentTypeGroups.Count);
+    return systemEvenness;
+}
+```
+
+#### **What This Calculates**
+
+- **Shannon Diversity Index (H')**: Measures how diverse the component types are on a node
+- **Evenness**: A value from 0 to 1, where 1 means all component types are equally distributed
+
+#### **Potential Use Cases Explored**
+
+The idea was that nodes with higher evenness might:
+- Be more resilient to component-specific failures
+- Have better resource utilization if different components have different resource profiles
+- Reduce the impact of cascading failures
+
+#### **Current Status**
+
+This remains an unexplored concept in the codebase. The calculation is implemented but not integrated into any scheduling or distribution logic. It represents one of several thought experiments about alternative approaches to distributed system management.
+
 ### 6. **Health Monitoring and Failure Recovery**
 
 **Process Description:**
